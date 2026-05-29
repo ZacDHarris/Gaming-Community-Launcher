@@ -1,4 +1,5 @@
 const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs   = require('fs');
 const cp   = require('child_process');
@@ -311,6 +312,37 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  if (!isDev) checkForUpdates();
+});
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+
+// ── Auto-updater ──────────────────────────────────────────────────────────────
+function checkForUpdates() {
+  autoUpdater.checkForUpdates().catch(() => {});
+
+  autoUpdater.on('update-available', (info) => {
+    dialog.showMessageBox(gclWin, {
+      type: 'info',
+      title: 'Update Available',
+      message: `Version ${info.version} is available.`,
+      detail: 'Downloading update in the background. You will be notified when it\'s ready to install.',
+      buttons: ['OK'],
+    });
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox(gclWin, {
+      type: 'info',
+      title: 'Update Ready',
+      message: 'A new version has been downloaded.',
+      detail: 'Restart the app now to apply the update, or it will be applied next time you launch.',
+      buttons: ['Restart Now', 'Later'],
+      defaultId: 0,
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.quitAndInstall();
+    });
+  });
+}

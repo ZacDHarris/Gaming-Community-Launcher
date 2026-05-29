@@ -1417,6 +1417,8 @@ export default function GamingLauncher() {
   const [tab, setTab]             = useState("library");
   const [platFilter, setPlatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [platFilters, setPlatFilters]   = useState({});
+  const [openFilterPlat, setOpenFilterPlat] = useState(null);
   const [showTheme, setShowTheme]   = useState(false);
   const [showDiscord, setShowDiscord] = useState(false);
   const [discordNotifs, setDiscordNotifs] = useState([]);
@@ -1802,7 +1804,7 @@ export default function GamingLauncher() {
         </aside>
 
         {/* Main */}
-        <main style={{ flex:1, overflowY:"auto", padding:18, paddingRight:showDiscord?296:18, transition:"padding-right 0.35s" }}>
+        <main style={{ flex:1, overflowY:"auto", padding:18, paddingRight:showDiscord?296:18, transition:"padding-right 0.35s" }} onClick={()=>setOpenFilterPlat(null)}>
           {tab==="library"&&(
             <>
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16, flexWrap:"wrap" }}>
@@ -1812,6 +1814,12 @@ export default function GamingLauncher() {
                 </div>
                 <div style={{ flex:1 }} />
                 {platFilter==='custom'&&<button onClick={()=>setAddGameModal(true)} style={{ background:'#a78bfa22', border:'1px solid #a78bfa50', color:'#a78bfa', padding:'7px 14px', borderRadius:8, cursor:'pointer', fontSize:11, fontWeight:800, flexShrink:0, whiteSpace:'nowrap' }}>+ ADD GAME</button>}
+                <label style={{ display:"flex", alignItems:"center", gap:7, cursor:"pointer", flexShrink:0 }} onClick={()=>setStatusFilter(statusFilter==="installed"?"all":"installed")}>
+                  <div style={{ width:36, height:20, borderRadius:10, background:statusFilter==="installed"?t.accent:t.border, position:"relative", transition:"background 0.2s", flexShrink:0 }}>
+                    <div style={{ position:"absolute", top:3, left:statusFilter==="installed"?19:3, width:14, height:14, borderRadius:"50%", background:"#fff", transition:"left 0.2s", boxShadow:"0 1px 3px #0005" }} />
+                  </div>
+                  <span style={{ fontSize:11, fontWeight:700, color:statusFilter==="installed"?t.accent:t.sub, whiteSpace:"nowrap", userSelect:"none" }}>Show Installed</span>
+                </label>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search library..." style={{ background:t.card, border:`1px solid ${t.border}`, color:t.text, padding:"7px 13px", borderRadius:8, fontSize:11, outline:"none", width:210, fontFamily:"inherit" }} onFocus={e=>e.target.style.borderColor=t.accent} onBlur={e=>e.target.style.borderColor=t.border} />
               </div>
               {platFilter==="all"?(
@@ -1839,19 +1847,93 @@ export default function GamingLauncher() {
                     )}
                     {/* ── Platform sections ──────────────────────────────── */}
                     {connectedPlats.map(plat=>{
-                      const games=filtered.filter(g=>g.platform.id===plat.id);
-                      if(games.length===0) return null;
+                      const pf = { status:'all', sort:'name-asc', genre:'all', favs:'all', ...platFilters[plat.id] };
+                      const baseGames = filtered.filter(g=>g.platform.id===plat.id);
+                      if(baseGames.length===0) return null;
+                      const genres = [...new Set(baseGames.map(g=>g.genre).filter(Boolean))].sort();
+                      let platGames = [...baseGames];
+                      if(pf.status==='installed')     platGames = platGames.filter(g=>g.downloaded);
+                      if(pf.status==='not-installed') platGames = platGames.filter(g=>!g.downloaded);
+                      if(pf.favs==='favorited')       platGames = platGames.filter(g=>favorites.includes(g.id));
+                      if(pf.favs==='not-favorited')   platGames = platGames.filter(g=>!favorites.includes(g.id));
+                      if(pf.genre!=='all')             platGames = platGames.filter(g=>g.genre===pf.genre);
+                      platGames.sort((a,b)=>{
+                        if(pf.sort==='name-asc')    return a.name.localeCompare(b.name);
+                        if(pf.sort==='name-desc')   return b.name.localeCompare(a.name);
+                        if(pf.sort==='rating-desc') return (b.rating||0)-(a.rating||0);
+                        if(pf.sort==='rating-asc')  return (a.rating||0)-(b.rating||0);
+                        if(pf.sort==='size-desc')   return parseFloat(b.size||0)-parseFloat(a.size||0);
+                        if(pf.sort==='size-asc')    return parseFloat(a.size||0)-parseFloat(b.size||0);
+                        if(pf.sort==='hours-desc')  return (b.hours||0)-(a.hours||0);
+                        if(pf.sort==='hours-asc')   return (a.hours||0)-(b.hours||0);
+                        return 0;
+                      });
+                      const hasFilter = pf.status!=='all'||pf.favs!=='all'||pf.genre!=='all'||pf.sort!=='name-asc';
+                      const setF = (key,val) => setPlatFilters(prev=>({...prev,[plat.id]:{status:'all',sort:'name-asc',genre:'all',favs:'all',...prev[plat.id],[key]:val}}));
                       return(
                         <div key={plat.id} style={{ marginBottom:28 }}>
                           <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
                             <div style={{ width:26, height:26, borderRadius:6, background:plat.bg, display:"flex", alignItems:"center", justifyContent:"center", border:`1px solid ${plat.accent}40` }}><PlatLogo pid={plat.id} size={16} /></div>
                             <span style={{ fontWeight:900, fontSize:13 }}>{plat.name}</span>
-                            <span style={{ fontSize:9, background:`${plat.accent}18`, color:plat.accent, padding:"2px 8px", borderRadius:99, fontWeight:800, border:`1px solid ${plat.accent}30` }}>{games.filter(g=>g.downloaded).length}/{games.length}</span>
+                            <span style={{ fontSize:9, background:`${plat.accent}18`, color:plat.accent, padding:"2px 8px", borderRadius:99, fontWeight:800, border:`1px solid ${plat.accent}30` }}>{platGames.filter(g=>g.downloaded).length}/{platGames.length}</span>
                             <div style={{ flex:1, height:1, background:`linear-gradient(90deg, ${t.border}, transparent)` }} />
+                            {/* ── Per-platform filter button ── */}
+                            <div style={{ position:"relative" }} onClick={e=>e.stopPropagation()}>
+                              <button onClick={()=>setOpenFilterPlat(openFilterPlat===plat.id?null:plat.id)} style={{ display:"flex", alignItems:"center", gap:5, background:hasFilter?`${plat.accent}22`:t.card, border:`1px solid ${hasFilter?plat.accent+'55':t.border}`, color:hasFilter?plat.accent:t.sub, padding:"4px 10px", borderRadius:6, cursor:"pointer", fontSize:10, fontWeight:800, letterSpacing:"1px", whiteSpace:"nowrap" }}>
+                                FILTER{hasFilter?' ●':''}
+                              </button>
+                              {openFilterPlat===plat.id&&(
+                                <div style={{ position:"absolute", right:0, top:"calc(100% + 6px)", zIndex:300, background:t.card, border:`1px solid ${t.border}`, borderRadius:10, boxShadow:"0 8px 32px #000a", padding:"14px 16px", minWidth:230, display:"flex", flexDirection:"column", gap:13 }}>
+                                  {/* Status */}
+                                  <div>
+                                    <div style={{ fontSize:9, fontWeight:800, color:t.sub, letterSpacing:"2px", marginBottom:6 }}>STATUS</div>
+                                    <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                                      {[['all','All'],['installed','Installed'],['not-installed','Not Installed']].map(([v,label])=>(
+                                        <button key={v} onClick={()=>setF('status',v)} style={{ padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:700, cursor:"pointer", background:pf.status===v?`${plat.accent}25`:"transparent", border:`1px solid ${pf.status===v?plat.accent+'60':t.border}`, color:pf.status===v?plat.accent:t.sub }}>{label}</button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  {/* Favorites */}
+                                  <div>
+                                    <div style={{ fontSize:9, fontWeight:800, color:t.sub, letterSpacing:"2px", marginBottom:6 }}>FAVORITES</div>
+                                    <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                                      {[['all','All'],['favorited','★ Favorited'],['not-favorited','Not Favorited']].map(([v,label])=>(
+                                        <button key={v} onClick={()=>setF('favs',v)} style={{ padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:700, cursor:"pointer", background:pf.favs===v?`${plat.accent}25`:"transparent", border:`1px solid ${pf.favs===v?plat.accent+'60':t.border}`, color:pf.favs===v?plat.accent:t.sub }}>{label}</button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  {/* Genre */}
+                                  {genres.length>1&&(
+                                    <div>
+                                      <div style={{ fontSize:9, fontWeight:800, color:t.sub, letterSpacing:"2px", marginBottom:6 }}>GENRE</div>
+                                      <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                                        <button onClick={()=>setF('genre','all')} style={{ padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:700, cursor:"pointer", background:pf.genre==='all'?`${plat.accent}25`:"transparent", border:`1px solid ${pf.genre==='all'?plat.accent+'60':t.border}`, color:pf.genre==='all'?plat.accent:t.sub }}>All</button>
+                                        {genres.map(g=>(
+                                          <button key={g} onClick={()=>setF('genre',g)} style={{ padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:700, cursor:"pointer", background:pf.genre===g?`${plat.accent}25`:"transparent", border:`1px solid ${pf.genre===g?plat.accent+'60':t.border}`, color:pf.genre===g?plat.accent:t.sub }}>{g}</button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {/* Sort */}
+                                  <div>
+                                    <div style={{ fontSize:9, fontWeight:800, color:t.sub, letterSpacing:"2px", marginBottom:6 }}>SORT BY</div>
+                                    <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                                      {[['name-asc','Name A–Z'],['name-desc','Name Z–A'],['rating-desc','Best Rated'],['rating-asc','Lowest Rated'],['size-desc','Largest'],['size-asc','Smallest'],['hours-desc','Most Played'],['hours-asc','Least Played']].map(([v,label])=>(
+                                        <button key={v} onClick={()=>setF('sort',v)} style={{ padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:700, cursor:"pointer", background:pf.sort===v?`${plat.accent}25`:"transparent", border:`1px solid ${pf.sort===v?plat.accent+'60':t.border}`, color:pf.sort===v?plat.accent:t.sub }}>{label}</button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  {/* Reset */}
+                                  {hasFilter&&(
+                                    <button onClick={()=>setPlatFilters(prev=>({...prev,[plat.id]:{status:'all',sort:'name-asc',genre:'all',favs:'all'}}))} style={{ padding:"5px", borderRadius:6, fontSize:10, fontWeight:800, cursor:"pointer", background:"transparent", border:`1px solid ${t.border}`, color:t.sub }}>✕ Reset Filters</button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          {games.length===0?<div style={{ color:t.sub, fontSize:11, padding:"8px 0" }}>No games match</div>:(
+                          {platGames.length===0?<div style={{ color:t.sub, fontSize:11, padding:"8px 0" }}>No games match your filters</div>:(
                             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(178px, 1fr))", gap:12 }}>
-                              {games.map(g=><GameCard key={g.id} game={g} platform={plat} t={t} onOpen={handleOpen} fire={fire} dlProg={dlProg[g.id]} isFavorite={favorites.includes(g.id)} onFavorite={toggleFavorite} />)}
+                              {platGames.map(g=><GameCard key={g.id} game={g} platform={plat} t={t} onOpen={handleOpen} fire={fire} dlProg={dlProg[g.id]} isFavorite={favorites.includes(g.id)} onFavorite={toggleFavorite} />)}
                             </div>
                           )}
                         </div>
