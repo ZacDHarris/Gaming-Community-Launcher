@@ -9,14 +9,14 @@
     A unified desktop launcher that aggregates your entire gaming library from every major platform into a single, beautiful interface — with live community feeds, Discord integration, and no subscriptions required.
   </p>
 
-  [![Download](https://img.shields.io/badge/Download-v1.0.0-brightgreen?style=for-the-badge&logo=windows)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.0.0.exe)
-  [![Portable ZIP](https://img.shields.io/badge/Portable-ZIP-blue?style=for-the-badge&logo=files)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.0.0-win.zip)
+  [![Download](https://img.shields.io/badge/Download-v1.1.0-brightgreen?style=for-the-badge&logo=windows)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.1.0.exe)
+  [![Portable ZIP](https://img.shields.io/badge/Portable-ZIP-blue?style=for-the-badge&logo=files)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.1.0-win.zip)
 
   ![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)
   ![Electron](https://img.shields.io/badge/Electron-42.x-47848F?style=flat-square&logo=electron)
   ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
   ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-  ![Version](https://img.shields.io/badge/version-1.0.0-orange?style=flat-square)
+  ![Version](https://img.shields.io/badge/version-1.1.0-orange?style=flat-square)
 </div>
 
 ---
@@ -86,6 +86,24 @@ Six built-in dark themes that persist across sessions:
 - Smooth spring-based transitions throughout
 - Game artwork sourced from Steam CDN and Wikipedia thumbnails
 
+### Auto-Updates
+The launcher checks for new releases silently on every launch. When an update is available it downloads in the background and prompts with **Restart Now / Later** — no manual re-downloading required.
+
+### Per-Platform Game Filters
+Every platform section has an independent **FILTER** button with four categories:
+
+| Category | Options |
+|---|---|
+| **Status** | All / Installed / Not Installed |
+| **Favorites** | All / ★ Favorited / Not Favorited |
+| **Genre** | All + every genre present in that platform |
+| **Sort By** | Name A–Z, Name Z–A, Best Rated, Lowest Rated, Largest, Smallest, Most Played, Least Played |
+
+The button highlights in the platform's accent color and shows a dot indicator when any filter is active. Each platform's filters are independent of one another.
+
+### Show Installed Toggle
+A quick-access toggle next to the search bar filters the entire library to installed games only with a single click.
+
 ### System Info
 - Disk space display per drive via PowerShell integration
 
@@ -110,8 +128,8 @@ Six built-in dark themes that persist across sessions:
 
 | Option | Description |
 |---|---|
-| [**Setup .exe**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.0.0.exe) | Recommended — runs the installer wizard, creates Start Menu & Desktop shortcuts |
-| [**Portable .zip**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.0.0-win.zip) | No installation — extract anywhere and run |
+| [**Setup .exe**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.1.0.exe) | Recommended — runs the installer wizard, creates Start Menu & Desktop shortcuts |
+| [**Portable .zip**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.1.0-win.zip) | No installation — extract anywhere and run |
 
 1. Download the `.exe` above
 2. Run it and follow the setup wizard

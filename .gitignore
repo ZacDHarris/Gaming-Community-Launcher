@@ -13,6 +13,10 @@ dist-ssr
 dist-electron
 *.local
 
+# Claude Code config (local only)
+.claude/
+CONVERSATION_LOG.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
