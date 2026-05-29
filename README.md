@@ -9,6 +9,9 @@
     A unified desktop launcher that aggregates your entire gaming library from every major platform into a single, beautiful interface — with live community feeds, Discord integration, and no subscriptions required.
   </p>
 
+  [![Download](https://img.shields.io/badge/Download-v1.0.0-brightgreen?style=for-the-badge&logo=windows)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.0.0.exe)
+  [![Portable ZIP](https://img.shields.io/badge/Portable-ZIP-blue?style=for-the-badge&logo=files)](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.0.0-win.zip)
+
   ![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)
   ![Electron](https://img.shields.io/badge/Electron-42.x-47848F?style=flat-square&logo=electron)
   ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
@@ -105,12 +108,16 @@ Six built-in dark themes that persist across sessions:
 
 > **No Node.js or npm required.** The installer bundles everything.
 
-1. Go to the [Releases](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases) page
-2. Download the latest `Gaming-Community-Launcher-Setup-x.x.x.exe`
-3. Run the installer and follow the setup wizard
-4. Launch from the desktop shortcut or Start Menu
+| Option | Description |
+|---|---|
+| [**Setup .exe**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher+Setup+1.0.0.exe) | Recommended — runs the installer wizard, creates Start Menu & Desktop shortcuts |
+| [**Portable .zip**](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases/latest/download/Gaming+Community+Launcher-1.0.0-win.zip) | No installation — extract anywhere and run |
 
-Requires **Windows 10 or 11**.
+1. Download the `.exe` above
+2. Run it and follow the setup wizard
+3. Launch from the Desktop shortcut or Start Menu
+
+Requires **Windows 10 or 11 (64-bit)**.
 
 ---
 
