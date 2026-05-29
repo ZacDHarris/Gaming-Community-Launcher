@@ -101,7 +101,22 @@ Six built-in dark themes that persist across sessions:
 
 ---
 
-## Getting Started
+## Download & Install
+
+> **No Node.js or npm required.** The installer bundles everything.
+
+1. Go to the [Releases](https://github.com/ZacDHarris/Gaming-Community-Launcher/releases) page
+2. Download the latest `Gaming-Community-Launcher-Setup-x.x.x.exe`
+3. Run the installer and follow the setup wizard
+4. Launch from the desktop shortcut or Start Menu
+
+Requires **Windows 10 or 11**.
+
+---
+
+## For Developers
+
+If you want to contribute or build from source, you'll need Node.js and npm installed.
 
 ### Prerequisites
 
@@ -109,12 +124,12 @@ Six built-in dark themes that persist across sessions:
 - [npm](https://www.npmjs.com/) v9 or higher
 - Windows 10 / 11
 
-### Development
+### Run in Development Mode
 
 ```bash
 # Clone the repository
-git clone https://github.com/zachdaneharris/gaming-community-launcher.git
-cd gaming-community-launcher
+git clone https://github.com/ZacDHarris/Gaming-Community-Launcher.git
+cd Gaming-Community-Launcher
 
 # Install dependencies
 npm install
@@ -123,14 +138,12 @@ npm install
 npm run electron:dev
 ```
 
-### Build Installer
+### Build the Installer
 
 ```bash
-# Build the Windows installer (.exe)
+# Produces a .exe installer in dist-electron/
 npm run electron:build
 ```
-
-The installer will be output to `dist-electron/`.
 
 ---
 
